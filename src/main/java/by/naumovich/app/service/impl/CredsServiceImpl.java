@@ -26,7 +26,11 @@ public class CredsServiceImpl implements LoginService {
 	CredsRepo repo;
 
 	public static Map<String, UserAndDate> lastActionMap = new HashMap<String, CredsServiceImpl.UserAndDate>();
-	@Value("${token.tllSeconds}")
+
+	public CredsServiceImpl(@Value("${token.tllSeconds}") Integer ttl) {
+		CredsServiceImpl.ttl = ttl;
+	}
+
 	public static Integer ttl;
 
 	@Override
@@ -55,6 +59,9 @@ public class CredsServiceImpl implements LoginService {
 		}
 
 		UserAndDate userAndDate = lastActionMap.get(token);
+		if (userAndDate == null) {
+			throw new Unauthorized();
+		}
 		if ((new Date().getTime() - userAndDate.date.getTime()) / 1000 > ttl) {
 			lastActionMap.remove(token);
 			throw new Unauthorized();

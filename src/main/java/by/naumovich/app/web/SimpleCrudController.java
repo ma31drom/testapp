@@ -27,13 +27,13 @@ public abstract class SimpleCrudController<T extends IdAwareObject> extends Erro
 
 	@GetMapping(path = "/{id}")
 	@ResponseBody
-	public T get(@PathVariable Integer id) {
+	public T get(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token, @PathVariable Integer id) {
 		return service.get(id);
 	}
 
 	@GetMapping
 	@ResponseBody
-	public List<T> getAll() {
+	public List<T> getAll(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token) {
 		return service.getAll();
 	}
 

@@ -12,26 +12,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import by.naumovich.app.dao.model.Brand;
 import by.naumovich.app.dao.model.IdAwareObject;
-import by.naumovich.app.dao.validation.AdminRole;
+import by.naumovich.app.dao.validation.AuthValidations;
 import by.naumovich.app.filter.TokenRegFilter;
 
 @RestController
 @RequestMapping("/brands")
 public class BrandController extends SimpleCrudController<Brand> {
 	@Override
-	public IdAwareObject create(@RequestHeader(name = TokenRegFilter.TOKEN) @AdminRole String token,
+	public IdAwareObject create(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@RequestBody @Valid Brand obj) {
+		AuthValidations.validateAdmin();
 		return super.create(token, obj);
 	}
 
 	@Override
-	public void update(@RequestHeader(name = TokenRegFilter.TOKEN) @AdminRole String token,
+	public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@RequestBody @Valid Brand obj) {
 		super.update(token, obj);
 	}
 
 	@Override
-	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN) @AdminRole String token,
+	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@RequestParam List<Integer> ids) {
 		super.delete(token, ids);
 	}

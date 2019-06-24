@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +14,6 @@ import by.naumovich.app.dao.model.CredsDTO;
 import by.naumovich.app.dao.model.IdAwareObject;
 import by.naumovich.app.dao.validation.UserExists;
 import by.naumovich.app.service.LoginService;
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @RestController
 public class CredsController {
