@@ -49,13 +49,14 @@ public class CarPicController extends ErrorHandlingController {
 	}
 
 	@GetMapping("/{carId}/pictures/{id}")
-	InputStream get(@PathVariable Integer carId, @PathVariable Integer id, HttpServletResponse response) {
+	void get(@PathVariable Integer carId, @PathVariable Integer id, HttpServletResponse response) throws IOException {
 		CarPicture byId = service.getById(carId, id);
-		byte[] decodeFromString = Base64Utils.decodeFromString(byId.getValueBase64());
+		byte[] decodeFromString = byId.getValueBase64();
 
 		response.setContentType("application/octet-stream");
 		response.addHeader("Content-disposition", "attachment; filename=" + byId.getFileName());
-		return new ByteArrayInputStream(decodeFromString);
+
+		response.getOutputStream().write(decodeFromString);
 	}
 
 	@DeleteMapping("/{carId}/pictures/{id}")

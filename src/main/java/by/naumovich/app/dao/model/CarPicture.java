@@ -27,7 +27,7 @@ public class CarPicture extends IdAwareObject {
 	private String fileName;
 
 	@NotNull
-	private String valueBase64;
+	private byte[] valueBase64;
 
 	public String getFileName() {
 		return fileName;
@@ -53,11 +53,11 @@ public class CarPicture extends IdAwareObject {
 		this.carId = carId;
 	}
 
-	public String getValueBase64() {
+	public byte[] getValueBase64() {
 		return valueBase64;
 	}
 
-	public void setValueBase64(String valueBase64) {
+	public void setValueBase64(byte[] valueBase64) {
 		this.valueBase64 = valueBase64;
 	}
 

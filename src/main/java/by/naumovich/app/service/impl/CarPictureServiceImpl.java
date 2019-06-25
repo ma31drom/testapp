@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
 
 import by.naumovich.app.dao.jpa.CarPictureRepo;
 import by.naumovich.app.dao.model.CarPicture;
@@ -38,11 +37,10 @@ public class CarPictureServiceImpl implements CarPictureService {
 		try {
 
 			byte[] byteArray = IOUtils.toByteArray(is);
-			String encodeToString = Base64Utils.encodeToString(byteArray);
 
 			CarPicture cp = new CarPicture();
 			cp.setCarId(carId);
-			cp.setValueBase64(encodeToString);
+			cp.setValueBase64(byteArray);
 			cp.setFileName(fileName);
 			CarPicture save = repo.save(cp);
 			return new IdAwareObject(save.getId());
@@ -59,7 +57,7 @@ public class CarPictureServiceImpl implements CarPictureService {
 		if (one == null || one.getCarId() != carId) {
 			throw new CarPicNotFoundException();
 		}
-		
+
 		return one;
 	}
 
