@@ -8,7 +8,7 @@ public interface LicenceService extends CrudService<DriverLicence> {
 
 	DriverLicence getForUser(Integer userId);
 
-	List<DriverLicence> getAllForUser();
+	DriverLicence getAllForUser();
 
 	void deleteForUser(List<Integer> ids);
 

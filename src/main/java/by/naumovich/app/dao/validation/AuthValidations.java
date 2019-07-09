@@ -12,8 +12,7 @@ import by.naumovich.app.service.impl.CredsServiceImpl.UserAndDate;
 
 public class AuthValidations {
 
-	public AuthValidations() {
-		// TODO Auto-generated constructor stub
+	private AuthValidations() {
 	}
 
 	static public void validateUser() {
@@ -25,6 +24,16 @@ public class AuthValidations {
 		} catch (EntityNotFoundException e) {
 			throw new Unauthorized(e);
 		}
+	}
+
+	static public boolean isUser() {
+		User user = user();
+		return user.getRole().equals(by.naumovich.app.dao.model.UserRole.user);
+	}
+
+	static public boolean isAdmin() {
+		User user = user();
+		return user.getRole().equals(by.naumovich.app.dao.model.UserRole.admin);
 	}
 
 	private static User user() {

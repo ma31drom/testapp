@@ -1,5 +1,6 @@
 package by.naumovich.app.web;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,14 +14,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.naumovich.app.dao.model.DriverLicence;
 import by.naumovich.app.dao.model.IdAwareObject;
+import by.naumovich.app.dao.validation.AuthValidations;
+import by.naumovich.app.excep.Unauthorized;
+import by.naumovich.app.filter.TokenRegFilter;
 import by.naumovich.app.service.LicenceService;
+import by.naumovich.app.service.impl.CredsServiceImpl;
 
 @RestController
 @RequestMapping("/licences")
@@ -37,28 +42,42 @@ public class LicenceController {
 
 	@GetMapping
 	@ResponseBody
-	public List<DriverLicence> getAll() {
+	public DriverLicence getAll(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token) {
+
+		Integer userId = CredsServiceImpl.getUserId();
+		if (userId == null)
+			throw new Unauthorized();
 		return service.getAllForUser();
 	}
 
 	@GetMapping("/licences")
 	@ResponseBody
-	public List<DriverLicence> getAllAdmin() {
+	public List<DriverLicence> getAllAdmin(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token) {
+		AuthValidations.validateAdmin();
 		return service.getAll();
 	}
-	
-	@PutMapping(path = "/{id}")
-	public void update(@PathVariable Integer id, @RequestBody @Valid DriverLicence obj) {
 
+	@PutMapping(path = "/{id}")
+	public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+			@PathVariable Integer id, @RequestBody @Valid DriverLicence obj) {
+
+		if (obj.getUserId() != CredsServiceImpl.getUserId()) {
+			throw new Unauthorized();
+		}
 		if (obj.getId() != id)
 			throw new ValidationException("path and body id mismatch");
 		obj.setId(id);
 		service.update(obj);
 	}
 
-	@DeleteMapping
-	public void delete(@RequestParam List<Integer> ids) {
-		service.deleteForUser(ids);
+	@DeleteMapping(path = "/{id}")
+	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+			@PathVariable Integer id) {
+		DriverLicence forUser = service.getForUser(CredsServiceImpl.getUserId());
+		if (forUser.getId() != id) {
+			throw new Unauthorized();
+		}
+		service.deleteForUser(Arrays.asList(id));
 	}
 
 	@PostMapping

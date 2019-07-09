@@ -31,8 +31,9 @@ public class LicenceJpaService extends AbstractCrudService<DriverLicence> implem
 	}
 
 	@Override
-	public List<DriverLicence> getAllForUser() {
-		return repo.findByUserId(CredsServiceImpl.getUserId());
+	public DriverLicence getAllForUser() {
+		List<DriverLicence> findByUserId = repo.findByUserId(CredsServiceImpl.getUserId());
+		return findByUserId.isEmpty() ? null : findByUserId.get(0);
 	}
 
 	@Override

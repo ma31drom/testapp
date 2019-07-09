@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import by.naumovich.app.dao.validation.CarExists;
+import by.naumovich.app.dao.validation.UserExists;
 
 @Entity
 @Table(name = "orders")
@@ -28,6 +29,7 @@ public class Order extends IdAwareObject {
 	private Integer carId;
 
 	@NotNull
+	@UserExists
 	private Integer userId;
 
 	@NotNull
