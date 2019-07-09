@@ -16,67 +16,67 @@ import by.naumovich.app.dao.validation.UserExists;
 import by.naumovich.app.service.LoginService;
 
 @RestController
-public class CredsController {
+public class CredsController extends ErrorHandlingController {
 
-	@Autowired
-	private LoginService serv;
+    @Autowired
+    private LoginService serv;
 
-	@PostMapping("/login")
-	@ResponseBody
-	public String login(@RequestParam String userName, @RequestParam String password) {
-		String password2 = LoginService.toHash(password);
-		return serv.login(new CredsDTO(userName, password2));
-	}
+    @PostMapping("/login")
+    @ResponseBody
+    public String login(@RequestParam String userName, @RequestParam String password) {
+        String password2 = LoginService.toHash(password);
+        return serv.login(new CredsDTO(userName, password2));
+    }
 
-	@PostMapping("/users/{id}/creds")
-	@ResponseBody
-	public IdAwareObject save(@PathVariable("id") @UserExists Integer userId, @RequestBody CredsPlainDTO creds) {
-		
-		String password2 = LoginService.toHash(creds.getPassword());
+    @PostMapping("/users/{id}/creds")
+    @ResponseBody
+    public IdAwareObject save(@PathVariable("id") @UserExists Integer userId, @RequestBody CredsPlainDTO creds) {
 
-		Credentials credsToSave = new Credentials();
-		credsToSave.setPassHash(password2);
-		credsToSave.setUserName(creds.userName);
-		credsToSave.setUserId(userId);
+        String password2 = LoginService.toHash(creds.getPassword());
 
-		IdAwareObject target = new IdAwareObject();
-		BeanUtils.copyProperties(serv.save(credsToSave), target);
+        Credentials credsToSave = new Credentials();
+        credsToSave.setPassHash(password2);
+        credsToSave.setUserName(creds.userName);
+        credsToSave.setUserId(userId);
 
-		return target;
-	}
+        IdAwareObject target = new IdAwareObject();
+        BeanUtils.copyProperties(serv.save(credsToSave), target);
 
-	public static class CredsPlainDTO {
+        return target;
+    }
 
-		private String userName;
+    public static class CredsPlainDTO {
 
-		private String password;
+        private String userName;
 
-		public CredsPlainDTO() {
-			super();
-		}
+        private String password;
 
-		public CredsPlainDTO(String userName, String password) {
-			super();
-			this.userName = userName;
-			this.password = password;
-		}
+        public CredsPlainDTO() {
+            super();
+        }
 
-		public String getUserName() {
-			return userName;
-		}
+        public CredsPlainDTO(String userName, String password) {
+            super();
+            this.userName = userName;
+            this.password = password;
+        }
 
-		public void setUserName(String userName) {
-			this.userName = userName;
-		}
+        public String getUserName() {
+            return userName;
+        }
 
-		public String getPassword() {
-			return password;
-		}
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
 
-		public void setPassword(String password) {
-			this.password = password;
-		}
+        public String getPassword() {
+            return password;
+        }
 
-	}
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+    }
 
 }
