@@ -33,6 +33,7 @@ public class CarController extends SimpleCrudController<Car> {
 	@Override
 	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@RequestParam List<Integer> ids) {
+		AuthValidations.validateAdmin();
 		super.delete(token, ids);
 	}
 }

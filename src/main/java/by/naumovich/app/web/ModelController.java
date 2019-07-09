@@ -29,7 +29,6 @@ public class ModelController extends SimpleCrudController<Model> {
 	@Override
 	public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@RequestBody @Valid Model obj) {
-
 		AuthValidations.validateAdmin();
 		super.update(token, obj);
 	}

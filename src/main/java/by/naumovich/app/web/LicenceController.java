@@ -50,7 +50,7 @@ public class LicenceController {
 		return service.getAllForUser();
 	}
 
-	@GetMapping("/licences")
+	@GetMapping("/admin")
 	@ResponseBody
 	public List<DriverLicence> getAllAdmin(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token) {
 		AuthValidations.validateAdmin();
@@ -61,7 +61,12 @@ public class LicenceController {
 	public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@PathVariable Integer id, @RequestBody @Valid DriverLicence obj) {
 
-		if (obj.getUserId() != CredsServiceImpl.getUserId()) {
+		if (AuthValidations.isAdmin()) {
+			if (obj.getId() != id)
+				throw new ValidationException("path and body id mismatch");
+			obj.setId(id);
+			service.update(obj);
+		} else if (obj.getUserId() != CredsServiceImpl.getUserId()) {
 			throw new Unauthorized();
 		}
 		if (obj.getId() != id)
@@ -73,16 +78,23 @@ public class LicenceController {
 	@DeleteMapping(path = "/{id}")
 	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
 			@PathVariable Integer id) {
-		DriverLicence forUser = service.getForUser(CredsServiceImpl.getUserId());
-		if (forUser.getId() != id) {
-			throw new Unauthorized();
+		if (AuthValidations.isAdmin()) {
+			service.deleteForUser(Arrays.asList(id));
+		} else {
+			DriverLicence forUser = service.getForUser(CredsServiceImpl.getUserId());
+			if (forUser.getId() != id) {
+				throw new Unauthorized();
+			}
+			service.deleteForUser(Arrays.asList(id));
 		}
-		service.deleteForUser(Arrays.asList(id));
 	}
 
 	@PostMapping
 	@ResponseBody
 	public IdAwareObject create(@RequestBody @Valid DriverLicence obj) {
+		Integer userId = CredsServiceImpl.getUserId();
+		if (userId != obj.getUserId())
+			throw new Unauthorized();
 		IdAwareObject result = new IdAwareObject();
 		BeanUtils.copyProperties(service.create(obj), result);
 		return result;
