@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,14 +31,16 @@ public class UserController extends ErrorHandlingController {
     UserService userService;
 
     @PostMapping
-    public IdAwareObject create(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token, @Valid User obj) {
+    public IdAwareObject create(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @Valid @RequestBody User obj) {
         AuthValidations.isAdmin();
         return new IdAwareObject(userService.create(obj)
             .getId());
     }
 
     @PutMapping
-    public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token, @Valid User obj) {
+    public void update(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token, @Valid @RequestBody User obj) {
         if (AuthValidations.isAdmin() || CredsServiceImpl.getUserId() == obj.getId()) {
             userService.update(obj);
         }
