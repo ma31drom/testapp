@@ -85,20 +85,27 @@ public class UserController extends ErrorHandlingController implements Initializ
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        User obj = new User();
-        obj.setAddress("slkjdhfglkjha");
-        obj.setFirstName("MaxMax");
-        obj.setLastName("MaxMax");
+        if (!userService.getAll()
+            .stream()
+            .filter(u -> u.getAddress() == "slkjdhfglkjha3187465" && u.getFirstName() == "MaxMax" && u.getLastName() == "MaxMax")
+            .findAny()
+            .isPresent()) {
 
-        obj.setBirthDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-19 03:14:07"));
-        obj.setRole(UserRole.admin);
-        User create = userService.create(obj);
+            User obj = new User();
+            obj.setAddress("slkjdhfglkjha3187465");
+            obj.setFirstName("MaxMax");
+            obj.setLastName("MaxMax");
 
-        Credentials creds = new Credentials();
-        // string123
-        creds.setPassHash("0362795b2ee7235b3b4d28f0698a85366703eacf0ba4085796ffd980d7653337");
-        creds.setUserName("string");
-        creds.setUserId(create.getId());
-        service.save(creds);
+            obj.setBirthDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-19 03:14:07"));
+            obj.setRole(UserRole.admin);
+            User create = userService.create(obj);
+
+            Credentials creds = new Credentials();
+            // string123
+            creds.setPassHash("0362795b2ee7235b3b4d28f0698a85366703eacf0ba4085796ffd980d7653337");
+            creds.setUserName("string");
+            creds.setUserId(create.getId());
+            service.save(creds);
+        }
     }
 }
