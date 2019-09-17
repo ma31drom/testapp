@@ -7,19 +7,20 @@ import javax.validation.ConstraintValidatorContext;
 import org.hibernate.Hibernate;
 
 import by.naumovich.app.dao.model.Car;
-import by.naumovich.app.excep.EntityExistsException;
 
 public class CarExistsValidator implements ConstraintValidator<CarExists, Integer> {
 
-	@Override
-	public boolean isValid(Integer brandId, ConstraintValidatorContext context) {
-		try {
-			Car one = RepoHolder.carRepo().getOne(brandId);
-			Hibernate.initialize(one);
-			return one.getId() == brandId;
-		} catch (EntityNotFoundException e) {
-		    throw new EntityExistsException();
-		}
-	}
+    @Override
+    public boolean isValid(Integer brandId, ConstraintValidatorContext context) {
+        try {
+            Car one =
+                RepoHolder.carRepo()
+                    .getOne(brandId);
+            Hibernate.initialize(one);
+            return one.getId() == brandId;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
+    }
 
 }
