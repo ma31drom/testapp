@@ -2,28 +2,28 @@ package by.naumovich.app.excep;
 
 public class Unauthorized extends RuntimeException {
 
-	public Unauthorized() {
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	public Unauthorized(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
+    public Unauthorized() {
+    }
 
-	public Unauthorized(Throwable arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
+    public Unauthorized(String arg0) {
+        super(arg0);
+    }
 
-	public Unauthorized(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
+    public Unauthorized(Throwable arg0) {
+        super(arg0);
+    }
 
-	public Unauthorized(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
-		super(arg0, arg1, arg2, arg3);
-		// TODO Auto-generated constructor stub
-	}
+    public Unauthorized(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
+
+    public Unauthorized(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
+        super(arg0, arg1, arg2, arg3);
+    }
 
 }

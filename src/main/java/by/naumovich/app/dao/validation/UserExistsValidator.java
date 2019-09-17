@@ -7,19 +7,22 @@ import javax.validation.ConstraintValidatorContext;
 import org.hibernate.Hibernate;
 
 import by.naumovich.app.dao.model.User;
+import by.naumovich.app.excep.EntityExistsException;
 
 public class UserExistsValidator implements ConstraintValidator<UserExists, Integer> {
 
-	@Override
-	public boolean isValid(Integer id, ConstraintValidatorContext context) {
-		try {
-			User one = RepoHolder.userRepo().getOne(id);
+    @Override
+    public boolean isValid(Integer id, ConstraintValidatorContext context) {
+        try {
+            User one =
+                RepoHolder.userRepo()
+                    .getOne(id);
 
-			Hibernate.initialize(one);
-			return one.getId() == id;
-		} catch (EntityNotFoundException e) {
-			return false;
-		}
-	}
+            Hibernate.initialize(one);
+            return one.getId() == id;
+        } catch (EntityNotFoundException e) {
+            throw new EntityExistsException();
+        }
+    }
 
 }

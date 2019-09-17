@@ -27,58 +27,68 @@ import by.naumovich.app.service.OrderService;
 
 @RestController
 @RequestMapping("/users/{userId}/orders")
-public class OrderController {
+public class OrderController extends ErrorHandlingController{
 
     @Autowired
-	OrderService orderService;
+    OrderService orderService;
 
-	@GetMapping(path = "/{id}")
-	@ResponseBody
-	public Order get(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
-			@PathVariable Integer userId, @PathVariable Integer id) {
-		return orderService.getForUser(userId, id);
-	}
+    @GetMapping(path = "/{id}")
+    @ResponseBody
+    public Order get(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @PathVariable Integer userId,
+        @PathVariable Integer id) {
+        return orderService.getForUser(userId, id);
+    }
 
-	@GetMapping
-	@ResponseBody
-	public List<Order> getForUser(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
-			@PathVariable Integer userId) {
+    @GetMapping
+    @ResponseBody
+    public List<Order> getForUser(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @PathVariable Integer userId) {
 
-		if (AuthValidations.isUser()) {
-			return orderService.getAllForUser(userId);
-		}
-		if (AuthValidations.isAdmin()) {
-			return orderService.getAll();
-		}
+        if (AuthValidations.isUser()) {
+            return orderService.getAllForUser(userId);
+        }
+        if (AuthValidations.isAdmin()) {
+            return orderService.getAll();
+        }
 
-		return Collections.emptyList();
-	}
+        return Collections.emptyList();
+    }
 
-	@PostMapping(path = "/{id}")
-	@ResponseBody
-	public IdAwareObject create(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
-			@PathVariable Integer userId, @RequestBody @Valid Order order) {
+    @PostMapping
+    @ResponseBody
+    public IdAwareObject create(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @PathVariable Integer userId,
+        @RequestBody @Valid Order order) {
 
-		if (order.getUserId() != userId) {
-			throw new ValidationException();
-		}
+        if (order.getUserId() != userId) {
+            throw new ValidationException();
+        }
 
-		return orderService.create(order);
-	}
+        return orderService.create(order);
+    }
 
-	@PutMapping
-	public void update(String token, @Valid Order obj) {
-		throw new UnsupportedOperationException();
-	}
+    @PutMapping
+    public void update(String token, @Valid Order obj) {
+        throw new UnsupportedOperationException();
+    }
 
-	@DeleteMapping(path = "/{id}")
-	@ResponseBody
-	public void delete(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
-			@PathVariable Integer userId, @PathVariable Integer id) {
-		if (AuthValidations.isAdmin() || orderService.get(id).getUserId().equals(userId)) {
-			orderService.delete(id);
-		}
-		throw new Unauthorized();
-	}
+    @DeleteMapping(path = "/{id}")
+    @ResponseBody
+    public void delete(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @PathVariable Integer userId,
+        @PathVariable Integer id) {
+        if (AuthValidations.isAdmin()
+            || orderService.get(id)
+                .getUserId()
+                .equals(userId)) {
+            orderService.delete(id);
+        }
+        throw new Unauthorized();
+    }
 
 }

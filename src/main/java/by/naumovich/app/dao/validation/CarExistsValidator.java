@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.hibernate.Hibernate;
 
 import by.naumovich.app.dao.model.Car;
+import by.naumovich.app.excep.EntityExistsException;
 
 public class CarExistsValidator implements ConstraintValidator<CarExists, Integer> {
 
@@ -17,7 +18,7 @@ public class CarExistsValidator implements ConstraintValidator<CarExists, Intege
 			Hibernate.initialize(one);
 			return one.getId() == brandId;
 		} catch (EntityNotFoundException e) {
-			return false;
+		    throw new EntityExistsException();
 		}
 	}
 
