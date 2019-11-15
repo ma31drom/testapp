@@ -14,7 +14,7 @@ import by.naumovich.app.service.CrudService;
 public abstract class AbstractCrudService<T extends IdAwareObject> implements CrudService<T> {
 
     @Autowired
-    private JpaRepository<T, Integer> repo;
+    protected JpaRepository<T, Integer> repo;
 
     @Override
     public T get(Integer id) {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import by.naumovich.app.dao.model.IdAwareObject;
 import by.naumovich.app.dao.model.Order;
+import by.naumovich.app.dao.model.User;
 import by.naumovich.app.dao.validation.AuthValidations;
 import by.naumovich.app.excep.Unauthorized;
 import by.naumovich.app.filter.TokenRegFilter;
@@ -27,7 +28,7 @@ import by.naumovich.app.service.OrderService;
 
 @RestController
 @RequestMapping("/users/{userId}/orders")
-public class OrderController extends ErrorHandlingController{
+public class OrderController extends ErrorHandlingController {
 
     @Autowired
     OrderService orderService;
@@ -72,8 +73,19 @@ public class OrderController extends ErrorHandlingController{
     }
 
     @PutMapping
-    public void update(String token, @Valid Order obj) {
-        throw new UnsupportedOperationException();
+    @ResponseBody
+    public IdAwareObject update(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @Valid @RequestBody Order obj) {
+        AuthValidations.validateLogged();
+        User user = AuthValidations.user();
+
+        if (user.getId() != obj.getUserId()) {
+            AuthValidations.validateAdmin();
+        }
+
+        return orderService.update(obj);
+
     }
 
     @DeleteMapping(path = "/{id}")

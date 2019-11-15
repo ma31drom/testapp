@@ -8,14 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ValidationException;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import by.naumovich.app.excep.BrandNotFoundException;
+import by.naumovich.app.excep.CarNotFoundException;
+import by.naumovich.app.excep.CarPicNotFoundException;
 import by.naumovich.app.excep.EntityExistsException;
 import by.naumovich.app.excep.Unauthorized;
+import by.naumovich.app.excep.UserNotFoundException;
 
 public abstract class ErrorHandlingController {
 
@@ -24,6 +27,34 @@ public abstract class ErrorHandlingController {
         resp.setStatus(HttpStatus.BAD_REQUEST.value());
         resp.getOutputStream()
             .write("INVALID_REQUEST_BODY".getBytes(StandardCharsets.UTF_8));
+    }
+
+    @ExceptionHandler(BrandNotFoundException.class)
+    public void handleNoBrand(HttpServletRequest req, HttpServletResponse resp, Exception ex) throws IOException {
+        resp.setStatus(HttpStatus.NOT_FOUND.value());
+        resp.getOutputStream()
+            .write("BRAND_NOT_FOUND".getBytes(StandardCharsets.UTF_8));
+    }
+
+    @ExceptionHandler(CarNotFoundException.class)
+    public void handleNoCar(HttpServletRequest req, HttpServletResponse resp, Exception ex) throws IOException {
+        resp.setStatus(HttpStatus.NOT_FOUND.value());
+        resp.getOutputStream()
+            .write("CAR_NOT_FOUND".getBytes(StandardCharsets.UTF_8));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public void handleNoUser(HttpServletRequest req, HttpServletResponse resp, Exception ex) throws IOException {
+        resp.setStatus(HttpStatus.NOT_FOUND.value());
+        resp.getOutputStream()
+            .write("USER_NOT_FOUND".getBytes(StandardCharsets.UTF_8));
+    }
+
+    @ExceptionHandler(CarPicNotFoundException.class)
+    public void handleNoCarPic(HttpServletRequest req, HttpServletResponse resp, Exception ex) throws IOException {
+        resp.setStatus(HttpStatus.NOT_FOUND.value());
+        resp.getOutputStream()
+            .write("PICTURE_NOT_FOUND".getBytes(StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(Exception.class)

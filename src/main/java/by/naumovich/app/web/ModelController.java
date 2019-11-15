@@ -22,6 +22,7 @@ import by.naumovich.app.dao.model.IdAwareObject;
 import by.naumovich.app.dao.model.Model;
 import by.naumovich.app.dao.validation.AuthValidations;
 import by.naumovich.app.filter.TokenRegFilter;
+import by.naumovich.app.service.BrandService;
 import by.naumovich.app.service.ModelService;
 
 @RestController
@@ -30,6 +31,8 @@ public class ModelController extends ErrorHandlingController {
 
     @Autowired
     ModelService service;
+    @Autowired
+    BrandService brandService;
 
     @PostMapping
     @ResponseBody
@@ -65,7 +68,9 @@ public class ModelController extends ErrorHandlingController {
 
     @GetMapping
     @ResponseBody
-    public List<Model> getAll(@RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token) {
-        return service.getAll();
+    public List<Model> getAll(
+        @RequestHeader(name = TokenRegFilter.TOKEN, required = false) String token,
+        @RequestParam(required = true, name = "brand") Integer brandId) {
+        return service.getByBrand(brandId);
     }
 }
