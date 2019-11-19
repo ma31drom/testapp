@@ -1,11 +1,14 @@
 package by.naumovich.app.dao.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,6 +34,10 @@ public class Car extends IdAwareObject {
     private CarType type;
 
     private Integer odometer;
+
+    @Column(name = "VIN", unique = true)
+    @Length(min = 17, max = 17)
+    private String vin;
 
     @NotNull
     private Integer year;
@@ -133,6 +140,14 @@ public class Car extends IdAwareObject {
 
     public void setEngine(Integer engine) {
         this.engine = engine;
+    }
+
+    public String getVin() {
+        return vin;
+    }
+
+    public void setVin(String vin) {
+        this.vin = vin;
     }
 
 }
